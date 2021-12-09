@@ -1,33 +1,32 @@
 import Resource from './resources';
 
 /**
- * Retrieve tax status information from a specific fiscal link.
- *
+ * A RiskInsights object contains a summary of credit risk metrics for a Link
  * @extends Resource
  */
-class TaxStatus extends Resource {
-  #endpoint = 'api/tax-status/'
+
+class RiskInsights extends Resource {
+  #endpoint = 'api/risk-insights/' // eslint-disable-line no-use-before-define
 
   /**
-   * Retrieve tax status information from a specific fiscal link.
+   * Retrieve risk insights from a specific banking link.
    *
    * @async
    * @param {string} link - UUID4 representation of a link Id.
-   * @param {object} options - Optional parameters ( saveData, attachPDF)
+   * @param {object} options - Optional parameters (saveData)
    * @returns {object} Response
    * @throws {RequestError}
    */
   async retrieve(link, options = {}) {
     const {
-      saveData, attachPDF,
+      saveData,
     } = options;
     const result = await this.session.post(this.#endpoint, {
       link,
       save_data: saveData,
-      attach_pdf: attachPDF,
     });
     return result;
   }
 }
 
-export default TaxStatus;
+export default RiskInsights;

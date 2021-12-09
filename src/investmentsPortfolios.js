@@ -1,14 +1,15 @@
 import Resource from './resources';
 
 /**
- * An Account is the representation of a bank account inside a financial institution.
+ * An InvestmentsPortfolio is a comprehensive view of your user's current
+ * investment holdings
  * @extends Resource
  */
-class Account extends Resource {
-  #endpoint = 'api/accounts/'
+class InvestmentsPortfolio extends Resource {
+  #endpoint = 'investments/portfolios/'
 
   /**
-   * Retrieve accounts from an existing link.
+   * Retrieve investments portfolios from an existing link
    * @async
    * @param {string} link UUID4 representation of a Link Id.
    * @param {object} options - Optional parameters (token, saveData)
@@ -26,4 +27,4 @@ class Account extends Resource {
   }
 }
 
-export default Account;
+export default InvestmentsPortfolio;

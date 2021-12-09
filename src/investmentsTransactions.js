@@ -2,14 +2,14 @@ import moment from 'moment';
 import Resource from './resources';
 
 /**
- * A Transaction contains the detailed information of each movement inside an Account.
+ * An InvestmentsTransaction gets the existing transactions for an instrument
  * @extends Resource
  */
-class Transaction extends Resource {
-  #endpoint = 'api/transactions/'
+class InvestmentsTransaction extends Resource {
+  #endpoint = 'investments/transactions/'
 
   /**
-   * Retrieve transactions from a specific account or all accounts from a specific link.
+   * Retrieve investments transactions from an existing link.
    * @async
    * @param {string} link - UUID4 representation of a Link Id.
    * @param {string} dateFrom - Required date from, format is YYYY-MM-DD.
@@ -39,4 +39,4 @@ class Transaction extends Resource {
   }
 }
 
-export default Transaction;
+export default InvestmentsTransaction;

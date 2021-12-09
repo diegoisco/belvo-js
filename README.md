@@ -23,27 +23,38 @@ Install the package using npm
 $ npm install belvo --save
 ```
 
-## Usage
+## Usage (create link via widget)
+
+When your user successfully links their account using the [Connect Widget](https://developers.belvo.com/docs/connect-widget), your implemented callback funciton will return the `link_id` required to make further API to retrieve information.
+
+
 ```javascript
 var belvo = require("belvo").default;
 
 var client = new belvo(
   'YOUR-KEY-ID',
   'YOUR-SECRET',
-  'https://sandbox.belvo.com'
+  'sandbox'
 );
 
-client.connect()
-  .then(function () {
-    client.links.list()
-      .then(function (res) {
-        console.log(res);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-});
+// Get the link_id from the result of your widget callback function
+const linkId = resultFromCallbackFunction.id
+
+function retrieveAccounts (linkId) {
+    return client.connect().then(function () {
+        return client.accounts.retrieve(linkId)
+            .then(function (response) {
+                return(response);
+            })
+            .catch(function (error) {
+                console.error(error)
+            });
+    })
+}
+
 ```
+
+
 Or if you prefer to use ES6 and async/await
 
 ```javascript
@@ -52,15 +63,71 @@ import Client from 'belvo';
 const client = new Client.default(
   'YOUR-KEY-ID',
   'YOUR-SECRET',
-  'https://sandbox.belvo.com'
+  'sandbox'
 );
 
-async function getLinks() {
+// Get the link_id from the result of your widget callback function
+const linkId = result_from_callback_function.id
+
+async function retrieveAccounts(linkId) {
   try {
-    const links = await client.links.list();
-    console.log(links);
+      await client.connect()
+      return await client.accounts.retrieve(linkId);
   } catch (error) {
-    console.log(error);
+      console.log(error);
+  }
+}
+```
+
+
+## Usage (create link via SDK)
+
+You can also manually create the link using the SDK. However, for security purposes, we highly recommend, that you use the [Connect Widget](https://developers.belvo.com/docs/connect-widget) to create the link and follow the **Usage (create link via widget)** example.
+
+
+```javascript
+var belvo = require("belvo").default;
+
+var client = new belvo(
+  'YOUR-KEY-ID',
+  'YOUR-SECRET',
+  'sandbox'
+);
+
+function registerLinkAndRetrieveAccounts () {
+  return client.connect().then(function () {
+      return client.links.register('erebor_mx_retail', 'bnk1002', 'full')
+          .then(function (response) {
+              return client.accounts.retrieve(response.id);
+          })
+          .then(function (response) {
+              return response;
+          })
+          .catch(function (error) {
+              console.error(error)
+          });
+  })
+}
+```
+Or if you prefer to use ES6 and async/await
+
+```javascript
+import Client from 'belvo';
+
+const client = new Client(
+  'YOUR-KEY-ID',
+  'YOUR-SECRET',
+  'sandbox'
+);
+
+async function registerLinkAndRetrieveAccounts () {
+  try {
+      await client.connect()
+      const link = await client.links.register('erebor_mx_retail', 'bnk1006', 'supersecret');
+      console.log(link)
+      return await client.accounts.retrieve(link.id);
+  } catch (error) {
+      console.log(error);
   }
 }
 ```
@@ -69,16 +136,23 @@ async function getLinks() {
 After checking out the repo, run `npm install` to install dependencies. Then, run `npm test` to run the tests.
 
 To release a new version:
+- Create a new branch from master.
 - Use `npm version major|minor|patch` to bump a new version.
 - Create a new pull request for the new version.
 - Once the new version is merged in `master`, create a `tag` matching the new version.
 
 ### Linting
-Make sure to run `npm run lint`. Otherwise the build will break. 
+Make sure to run `npm run lint`. Otherwise the build will break.
 
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/belvo-finance/belvo-js. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/belvo-finance/belvo-js/blob/master/CODE_OF_CONDUCT.md).
+
+If you wish to submit a pull request, please be sure check the items on this list:
+- [ ] Tests related to the changed code were executed
+- [ ] The source code has been coded following [the OWASP security best practices](https://owasp.org/www-pdf-archive/OWASP_SCP_Quick_Reference_Guide_v2.pdf).
+- [ ] Commit message properly labeled
+- [ ] There is a ticket associated to each PR.
 
 
 ## Code of Conduct
